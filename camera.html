@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PSI - Human Pose Detection</title>
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: black;
+    }
+
+    .footer-text {
+        max-width: 600px;
+        text-align: center;
+        margin: auto;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .footer-text, .dg {
+        display: none;
+      }
+    }
+    #gameWindow {
+        height: 500px;
+        width: 500px;
+        border: 5px solid #555;
+        top:auto;
+        left:auto;
+        margin: 250px auto auto auto;
+        top:200px;
+        font-family:"Courier New", Courier, monospace;
+        font-size:20px;
+        text-align:center;
+        line-height: 40px;
+    }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/app.css" rel="stylesheet" type="text/css">
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"></script>
+</head>
+
+<body>
+    <div id="info" style='display:none'>
+    </div>
+    <div id="loading">
+        Loading the model...
+    </div>
+
+    <div id='main' style='display:none'>
+        <!--<video id="video"  controls    crossorigin="anonymous"playsinline style=" -moz-transform: scaleX(1);-->
+          <!-- -o-transform: scaleX(1);-->
+          <!-- -webkit-transform: scaleX(1);-->
+        <!--transform: scaleX(1);">-->
+        <!--</video>-->
+        <canvas id="output" style="float: right;"/>
+    </div>
+    <!--<div id='main' style='display:none'>-->
+        <!--&lt;!&ndash;<div id="subscriber" style="width: 600px;height: 600px;"></div>&ndash;&gt;-->
+        <!--&lt;!&ndash;<video id="publisher"></video>&ndash;&gt;-->
+        <!--<canvas id="output" />-->
+    <!--</div>-->
+    <script src="camera.js"></script>
+    <!--<script type="text/javascript" src="js/app.js"></script>-->
+</body>
+
+</html>
