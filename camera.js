@@ -19,7 +19,7 @@ import dat from 'dat.gui';
 import Stats from 'stats.js';
 
 import {drawBoundingBox, drawKeypoints, drawSkeleton} from './demo_util';
-import {externalFunction} from './TokboxConfig'
+import {apiKey,sessionId,token} from './TokboxConfig'
 import {connectMQTT} from './MQTTData'
 
 const videoWidth = 600;
@@ -30,11 +30,6 @@ const stats = new Stats();
  * @author Rasindu Roohansa
  * @desc
  */
-
-let apiKey = "46284932";
-let sessionId = "2_MX40NjI4NDkzMn5-MTU1MzEzOTM4MjQzOX5ZdUo0UHJQcjFiL21Mams3R0NtUFBWRVp-fg";
-let token = "T1==cGFydG5lcl9pZD00NjI4NDkzMiZzaWc9NGRkZDg5MjYzZGQxMjg1YmQ0YzE4NDk4M2NiZTk5ZWNlN2ZiYzY0YzpzZXNzaW9uX2lkPTJfTVg0ME5qSTRORGt6TW41LU1UVTFNekV6T1RNNE1qUXpPWDVaZFVvMFVISlFjakZpTDIxTWFtczNSME50VUZCV1JWcC1mZyZjcmVhdGVfdGltZT0xNTUzMTM5MzgyJnJvbGU9bW9kZXJhdG9yJm5vbmNlPTE1NTMxMzkzODIuNDUzNTE5NDE3NjQyOTg=";
-
 
 function isAndroid() {
   return /Android/i.test(navigator.userAgent);
@@ -50,9 +45,10 @@ function isMobile() {
 
 function initializeSession() {
   connectMQTT();
+  /**
+   * Connecting to OpenTok
+   */
   let session = OT.initSession(apiKey, sessionId);
-
-  // Subscribe to a newly created stream
   session.on('streamCreated', function(event) {
     session.subscribe(event.stream, 'subscriber', {
       insertMode: 'append',
@@ -70,16 +66,12 @@ function initializeSession() {
   session.connect(token, function(error) {
     if (error) {
       handleError(error);
-    } else {
-      // session.publish(publisher, handleError);
     }
   });
 }
 
-
 /**
- * Loads a the camera to be used in the demo
- *
+ * Loading TB Subscribed media stream video element to video canvas
  */
 
 async function setupCamera() {
@@ -91,18 +83,6 @@ async function setupCamera() {
   const video = document.getElementsByClassName('OT_video-element').item(0);
   video.width = videoWidth;
   video.height = videoHeight;
-  return video;
-  // video.srcObject=document.querySelector('video').play();
-  // // return video.srcObject =document.querySelector('video').srcObject;
-  // return new Promise((resolve) => {
-  //   resolve(video);
-  // });
-}
-
-async function loadVideo() {
-  const video = await setupCamera();
-  console.log(video);
-  // video.play();
   return video;
 }
 
@@ -137,14 +117,11 @@ const guiState = {
  */
 function setupGui(cameras, net) {
   guiState.net = net;
-
   if (cameras.length > 0) {
     guiState.camera = cameras[0].deviceId;
   }
-
-  const gui = new dat.GUI({width: 452,position:'absolute',left:609});
-  const algorithmController =
-      gui.add(guiState, 'algorithm', ['single-pose', 'multi-pose']);
+  const gui = new dat.GUI({width: 452,position:'absolute',left:450});
+  const algorithmController = gui.add(guiState, 'algorithm', ['single-pose', 'multi-pose']);
   let input = gui.addFolder('Input');
   const architectureController = input.add(
       guiState.input, 'mobileNetArchitecture',
@@ -173,7 +150,6 @@ function setupGui(cameras, net) {
   output.add(guiState.output, 'showBoundingBox');
   output.open();
 
-
   architectureController.onChange(function(architecture) {
     guiState.changeToArchitecture = architecture;
   });
@@ -186,7 +162,8 @@ function setupGui(cameras, net) {
         break;
       case 'multi-pose':
         single.close();
-        multi.open();
+        // multi.open();
+        single.open();
         break;
     }
   });
@@ -218,18 +195,13 @@ function detectPoseInRealTime(video, net) {
       // Important to purge variables and free up GPU memory
       guiState.net.dispose();
 
-      // Load the PoseNet model weights for either the 0.50, 0.75, 1.00, or 1.01
-      // version
       guiState.net = await posenet.load(+guiState.changeToArchitecture);
 
       guiState.changeToArchitecture = null;
     }
 
-    // Begin monitoring code for frames per second
     stats.begin();
 
-    // Scale an image down to a certain factor. Too large of an image will slow
-    // down the GPU
     const imageScaleFactor = guiState.input.imageScaleFactor;
     const outputStride = +guiState.input.outputStride;
 
@@ -267,9 +239,6 @@ function detectPoseInRealTime(video, net) {
       ctx.restore();
     }
 
-    // For each pose (i.e. person) detected in an image, loop through the poses
-    // and draw the resulting skeleton and keypoints if over certain confidence
-    // scores
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (guiState.output.showPoints) {
@@ -284,7 +253,6 @@ function detectPoseInRealTime(video, net) {
       }
     });
 
-    // End monitoring code for frames per second
     stats.end();
 
     requestAnimationFrame(poseDetectionFrame);
@@ -298,7 +266,7 @@ function detectPoseInRealTime(video, net) {
  * available camera devices, and setting off the detectPoseInRealTime function.
  */
 export async function bindPage() {
-  // Load the PoseNet model weights with architecture 0.75
+
   const net = await posenet.load(0.75);
 
   document.getElementById('loading').style.display = 'none';
@@ -329,14 +297,10 @@ const outputStride = 16;
 const flipHorizontal = false;
 
 async function estimatePoseOnImage(imageElement) {
-  // load the posenet model from a checkpoint
   const net = await posenet.load();
-
   const pose = await net.estimateSinglePose(imageElement, imageScaleFactor, flipHorizontal, outputStride);
-
   return pose;
 }
-
 const imageElement = document.getElementById('output');
 
 const pose = estimatePoseOnImage(imageElement);

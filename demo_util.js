@@ -16,6 +16,7 @@
  */
 import * as posenet from '@tensorflow-models/posenet';
 import * as tf from '@tensorflow/tfjs';
+import {formatPoses} from './MQTTData'
 
 const color = 'aqua';
 const boundingBoxColor = 'red';
@@ -72,7 +73,7 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     const {y, x} = keypoint.position;
     drawPoint(ctx, y * scale, x * scale, 3, color);
   }
-  console.log(keypoints);
+  formatPoses(keypoints)
 }
 
 /**

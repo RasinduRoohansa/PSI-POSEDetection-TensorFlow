@@ -1,37 +1,72 @@
-var mqtt = require('mqtt')
+var mqtt = require('mqtt');
+
+var websocket="localhost";
+var port=19001;
+var user="admin";
+var pass="pass#word1";
+var client ;
 
 export function connectMQTT() {
-    var client = new Paho.MQTT.Client("54.255.195.241", 8080, "clientId-" + parseInt(Math.random() * 100, 10));
-// set callback handlers
+    console.log('Connecting to MQTT')
+     client = new Paho.MQTT.Client(websocket, port, "psi_"+ parseInt(Math.random() * 100, 10));
+
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
+
     var options = {
         onSuccess:onConnect,
-        onFailure:doFail,
-        useSSL: true
+        onFailure:doFail
     }
-    // connect the client
+
     client.connect(options);
-    // called when the client connects
+
     function onConnect() {
-        // Once a connection has been made, make a subscription and send a message.
-        console.log("onConnect");
-        client.subscribe("my/topic1");
+        console.log("MQTT Connected");
+        client.subscribe("/sensor/#");
     }
+
     function doFail(e){
         console.log(e);
     }
-    // called when the client loses its connection
+
     function onConnectionLost(responseObject) {
+        console.log('MQTT Not Connected');
         if (responseObject.errorCode !== 0) {
             console.log("onConnectionLost:"+responseObject.errorMessage);
         }
     }
 
-    // called when a message arrives
     function onMessageArrived(message) {
-        console.log("onMessageArrived:"+message.payloadString);
-        document.write(message.payloadString);
-        alert("messgaearrived!")
+        console.log("onMessageArrived:"+message.destinationName);
+        console.log("message.payloadString:"+message.payloadString);
+    }
+
+}
+
+function sendMessage(message,topic){
+    var message = new Paho.MQTT.Message(message);
+    message.destinationName ='hr1/'+topic;
+    client.send(message);
+}
+
+export function formatPoses(stringValue) {
+    // sendMessage(JSON.parse(stringValue));
+    // console.log(stringValue)
+    const iterator = stringValue.values();
+
+    for (const value of iterator) {
+        // if(value.part == 'rightShoulder' || value.part == 'rightElbow' || value.part == 'rightWrist' || value.part=='nose'){
+            var obj=new Object();
+            obj.x=value.position.x;
+            obj.y=value.position.y;
+            var jsonString= JSON.stringify(obj);
+            console.log(jsonString);
+            sendMessage(jsonString,value.part);
+        // }
     }
 }
+
+
+
+
+
