@@ -21,6 +21,7 @@ import {formatPoses} from './MQTTData'
 const color = 'aqua';
 const boundingBoxColor = 'red';
 const lineWidth = 2;
+let keypointsList=[];
 
 function toTuple({y, x}) {
   return [y, x];
@@ -36,11 +37,11 @@ export function drawPoint(ctx, y, x, r, color) {
 /**
  * Draws a line on a canvas, i.e. a joint
  */
-export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
+export function drawSegment([ay, ax], [by, bx], color, scale, ctx, lw) {
   ctx.beginPath();
   ctx.moveTo(ax * scale, ay * scale);
   ctx.lineTo(bx * scale, by * scale);
-  ctx.lineWidth = lineWidth;
+  ctx.lineWidth = lw;
   ctx.strokeStyle = color;
   ctx.stroke();
 }
@@ -53,12 +54,46 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       posenet.getAdjacentKeyPoints(keypoints, minConfidence);
 
   adjacentKeyPoints.forEach((keypoints) => {
+    let clr = color;
+    let lw = lineWidth;
+    let stl = findStyles(keypoints[0].part, keypoints[1].part);
+    if (stl != null) {
+      clr = stl[2];
+      lw = stl[3];
+    }
     drawSegment(
-        toTuple(keypoints[0].position), toTuple(keypoints[1].position), color,
-        scale, ctx);
+        toTuple(keypoints[0].position), toTuple(keypoints[1].position), clr,
+        scale, ctx, lw);
   });
 }
 
+function findStyles(a,b){
+  let val = null;
+  skeletonStyles.forEach((x) => {
+    if (a===x[0] && b===x[1]) {
+      val = x;
+    }
+    if (a===x[1] && b===x[0]) {
+      val = x;
+    }
+  });
+  return val;
+}
+
+const skeletonStyles = [
+    ['rightElbow', 'rightShoulder', '#ff8227', 10],
+    ['leftElbow', 'leftShoulder', '#AEF92D', 10],
+    ['leftElbow', 'leftWrist', '#E865CA', 10],
+    ['rightElbow', 'rightWrist', '#0D1467', 10],
+    ['rightHip', 'rightShoulder', '#A2DF37', 10],
+    ['leftHip', 'leftShoulder', '#9007E7', 10],
+    ['rightHip', 'rightKnee', '#D92BA3', 10],
+    ['leftHip', 'leftKnee', '#FB0795', 10],
+    ['leftKnee', 'leftAnkle', '#217DD1', 10],
+    ['rightKnee', 'rightAnkle', '#BD0846', 10],
+    ['leftShoulder', 'rightShoulder', '#CA0DB5', 10],
+    ['leftHip', 'rightHip', '#0D9F67', 10]
+];
 /**
  * Draw pose keypoints onto a canvas
  */
@@ -73,7 +108,13 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     const {y, x} = keypoint.position;
     drawPoint(ctx, y * scale, x * scale, 3, color);
   }
-  formatPoses(keypoints)
+  keypointsList.push(keypoints);
+  if (keypointsList.length == 5) {
+    formatPoses(keypoints);
+    keypointsList=[];
+  }
+
+  // formatPoses(keypoints)
 }
 
 /**
