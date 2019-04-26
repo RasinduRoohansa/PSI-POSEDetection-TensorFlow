@@ -84,15 +84,29 @@ const skeletonStyles = [
     ['rightElbow', 'rightShoulder', '#ff8227', 10],
     ['leftElbow', 'leftShoulder', '#AEF92D', 10],
     ['leftElbow', 'leftWrist', '#E865CA', 10],
-    ['rightElbow', 'rightWrist', '#0D1467', 10],
+    ['rightElbow', 'rightWrist', '#E865CA', 10],
     ['rightHip', 'rightShoulder', '#A2DF37', 10],
     ['leftHip', 'leftShoulder', '#9007E7', 10],
     ['rightHip', 'rightKnee', '#D92BA3', 10],
     ['leftHip', 'leftKnee', '#FB0795', 10],
     ['leftKnee', 'leftAnkle', '#217DD1', 10],
-    ['rightKnee', 'rightAnkle', '#BD0846', 10],
+    ['rightKnee', 'rightAnkle', '#217DD1', 10],
     ['leftShoulder', 'rightShoulder', '#CA0DB5', 10],
     ['leftHip', 'rightHip', '#0D9F67', 10]
+
+// const skeletonStyles = [
+// ['rightElbow', 'rightShoulder', '#FB0795', 10],
+//     ['leftElbow', 'leftShoulder', '#FB0795', 10],
+//     ['leftElbow', 'leftWrist', '#FB0795', 10],
+//     ['rightElbow', 'rightWrist', '#FB0795', 10],
+//     ['rightHip', 'rightShoulder', '#FB0795', 10],
+//     ['leftHip', 'leftShoulder', '#FB0795', 10],
+//     ['rightHip', 'rightKnee', '#D92BA3', 10],
+//     ['leftHip', 'leftKnee', '#FB0795', 10],
+//     ['leftKnee', 'leftAnkle', '#FB0795', 10],
+//     ['rightKnee', 'rightAnkle', '#FB0795', 10],
+//      ['leftShoulder', 'rightShoulder', '#CA0DB5', 10],
+//     ['leftHip', 'rightHip', '#FB0795', 10]
 ];
 /**
  * Draw pose keypoints onto a canvas
