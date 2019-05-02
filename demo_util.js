@@ -16,7 +16,7 @@
  */
 import * as posenet from '@tensorflow-models/posenet';
 import * as tf from '@tensorflow/tfjs';
-import {formatPoses} from './MQTTData'
+import {sendDatatoWs} from './webSocket'
 
 const color = 'aqua';
 const boundingBoxColor = 'red';
@@ -124,11 +124,9 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
   }
   keypointsList.push(keypoints);
   if (keypointsList.length == 5) {
-    formatPoses(keypoints);
+    sendDatatoWs(keypoints);
     keypointsList=[];
   }
-
-  // formatPoses(keypoints)
 }
 
 /**
