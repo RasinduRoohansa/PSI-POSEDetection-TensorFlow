@@ -50,29 +50,27 @@ export function sendDatatoWs(stringValue) {
 
         let rightArmpayload;
 
-        if ((rsx != null) && (rsy != null) && (rex != null) && (rey != null) && (rwx != null) && (rwy != null)) {
-            let StoEx = rex - rsx;
-            let StoEy = rey - rsy;
+        // if ((rsx != null) && (rsy != null) && (rex != null) && (rey != null) && (rwx != null) && (rwy != null)) {
+            let rStoEx = rex - rsx;
+            let rStoEy = rey - rsy;
 
-            let EtoWx = rwx - rex;
-            let EtoWy = rwy - rey;
+            let rEtoWx = rwx - rex;
+            let rEtoWy = rwy - rey;
 
-            if ((StoEx > -35) && (StoEx < 35) && (EtoWx > -45) && (EtoWx < 35) && (StoEy > 35) && (EtoWy > 35)) {
+            if ((rStoEx > -35) && (rStoEx < 35) && (rEtoWx > -45) && (rEtoWx < 35) && (rStoEy > 35) && (rEtoWy > 35)) {
                 rightArmpayload = 'a';
 
-            } else if ((StoEx < -30) && (StoEx > -200) && (EtoWx < -30) && (EtoWx > -200) && (StoEy < 40) && (StoEy > -20) && (EtoWy < 40) && (EtoWy > -20)) {
+            } else if ((rStoEx < -30) && (rStoEx > -200) && (rEtoWx < -30) && (rEtoWx > -200) && (rStoEy < 40) && (rStoEy > -20) && (rEtoWy < 40) && (rEtoWy > -20)) {
                 rightArmpayload = 'b';
 
-            } else if ((StoEx > -130) && (StoEx < 20) && (EtoWx > -55) && (EtoWx < 15) && (StoEy < 20) && (EtoWy < -50)) {
+            } else if ((rStoEx > -130) && (rStoEx < 20) && (rEtoWx > -55) && (rEtoWx < 15) && (rStoEy < 20) && (rEtoWy < -50)) {
                 rightArmpayload = 'c';
 
             } else {
                 rightArmpayload = '!';
 
             }
-        } else {
-            rightArmpayload = 'No Right Arm Data ';
-        }
+        // }
         /**
          * Calculating Left Arm
          */
@@ -95,7 +93,7 @@ export function sendDatatoWs(stringValue) {
         }
         let leftArmPayload;
 
-        if ((lsX != null) && (lsY != null) && (leX != null) && (leY != null) && (lwX != null) && (lwY != null)) {
+        // if ((lsX != null) && (lsY != null) && (leX != null) && (leY != null) && (lwX != null) && (lwY != null)) {
             let StoEx = leX - lsX;
             let StoEy = leY - lsY;
 
@@ -114,9 +112,7 @@ export function sendDatatoWs(stringValue) {
             } else {
                 leftArmPayload = '!';
             }
-        } else {
-            leftArmPayload = 'No Left Arm Data ';
-        }
+        // }
 
         /**
          * Calculating Right/ Left Legs
@@ -158,7 +154,7 @@ export function sendDatatoWs(stringValue) {
         }
         let legsPayload;
 
-        if ((lhX != null) && (lhY != null) && (lkX != null) && (lkY != null) && (laX != null) && (laY != null) && (rhX != null) && (rhY != null) && (rkX != null) && (rkY != null) && (raX != null) && (raY != null)) {
+        // if ((lhX != null) && (lhY != null) && (lkX != null) && (lkY != null) && (laX != null) && (laY != null) && (rhX != null) && (rhY != null) && (rkX != null) && (rkY != null) && (raX != null) && (raY != null)) {
 
            let LHtoKx = lkX - lhX;
            let LHtoKy = lkY - lhY;
@@ -182,9 +178,7 @@ export function sendDatatoWs(stringValue) {
             } else {
                 legsPayload = '!';
             }
-        }else{
-            legsPayload='No Legs Data '
-        }
+        // }
 
         if (client.readyState === client.OPEN) {
             client.send(rightArmpayload+leftArmPayload+legsPayload);
